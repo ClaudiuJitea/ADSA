@@ -1,0 +1,28 @@
+# Build output
+**/bin/
+**/obj/
+Publish/
+
+# Runtime output
+Logs/
+Output/
+
+# IDE / editor
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.pdb
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and local environment
+.env
+.env.*
+*.pfx
+*.snk

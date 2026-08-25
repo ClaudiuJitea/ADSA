@@ -1,0 +1,13 @@
+{
+  "PreferLdaps": false,
+  "MaxDomainAdmins": 5,
+  "MinPasswordLength": 14,
+  "MinPasswordHistory": 24,
+  "MaxObjectsPerFinding": 100,
+  "MaxTier0PasswordAgeDays": 365,
+  "MaxTrustPasswordAgeDays": 365,
+  "SchemaChangeWindowDays": 90,
+  "MinCertificateKeySize": 2048,
+  "ApprovedLapsReaders": [],
+  "ApprovedGmsaReaders": []
+}

@@ -1,0 +1,150 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ADSecurityAuditGUI.MainWindow"
+        Title="AD Security Audit"
+        Width="1280" Height="860"
+        MinWidth="1080" MinHeight="720"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBg}">
+
+    <Grid RowDefinitions="3,*,Auto">
+        <Border Grid.Row="0" Background="{StaticResource AppAccentDeepBrush}"/>
+
+        <Grid Grid.Row="1" Margin="20,16,20,12" RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+            <!-- Header -->
+            <Border Grid.Row="0" Classes="panel" Padding="20,16" Margin="0,0,0,14">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Classes="kicker" Text="ACTIVE DIRECTORY SECURITY"/>
+                        <TextBlock Text="Security Audit Suite" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource AppText}"/>
+                        <TextBlock Name="TxtSubtitle"
+                                   Text="Read-only authorized audit  ·  PowerShell 7  ·  HTML, CSV and JSON reports"
+                                   FontSize="12"
+                                   Foreground="{StaticResource AppMuted}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Button Name="BtnRunAll" Classes="primary" Content="Run all modules" Click="BtnRunAll_Click" MinWidth="148" Height="36"/>
+                        <Button Name="BtnRunSelected" Classes="success" Content="Run selected" Click="BtnRunSelected_Click" MinWidth="128" Height="36"/>
+                        <Button Name="BtnStop" Classes="danger" Content="Stop audit" Click="BtnStop_Click" MinWidth="112" Height="36" IsEnabled="False"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Connection + scope -->
+            <Border Grid.Row="1" Classes="panel" Padding="20,16" Margin="0,0,0,14">
+                <StackPanel Spacing="4">
+                    <TextBlock Classes="kicker" Text="CONNECTION" Margin="0,0,0,10"/>
+                    <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="16" RowSpacing="0">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Classes="field-label" Text="Domain"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Classes="field-label" Text="Domain controller"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Classes="field-label" Text="Username"/>
+                        <TextBlock Grid.Row="0" Grid.Column="3" Classes="field-label" Text="Password"/>
+
+                        <TextBox Grid.Row="1" Grid.Column="0" Name="TxtDomain" Watermark="contoso.local"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Name="TxtServer" Watermark="dc01.contoso.local"/>
+                        <TextBox Grid.Row="1" Grid.Column="2" Name="TxtUsername" Watermark="CONTOSO\auditor"/>
+                        <TextBox Grid.Row="1" Grid.Column="3" Name="TxtPassword" PasswordChar="•" Watermark="Optional"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Classes="field-label" Text="Output folder" Margin="0,14,0,6"/>
+                        <TextBlock Grid.Row="2" Grid.Column="3" Classes="field-label" Text="Inactive days" Margin="0,14,0,6"/>
+
+                        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <TextBox Name="TxtOutputPath"/>
+                            <Button Grid.Column="1" Name="BtnBrowseOutput" Classes="neutral" Content="Browse" Click="BtnBrowseOutput_Click" MinWidth="88" Height="32"/>
+                        </Grid>
+                        <TextBox Grid.Row="3" Grid.Column="3" Name="TxtInactiveDays" Text="90"/>
+                    </Grid>
+
+                    <TextBlock Classes="field-label" Text="Options" Margin="0,16,0,4"/>
+                    <WrapPanel>
+                        <CheckBox Name="ChkSkipRemote" Content="Skip remote checks (WMI / Remote Registry)" Margin="0,0,20,4"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Modules header -->
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="2,0,8,8">
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Classes="kicker" Text="AUDIT MODULES" VerticalAlignment="Center"/>
+                    <TextBlock Text="Select modules  ·  scoring and reports always run" FontSize="12" Foreground="{StaticResource AppSubtle}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                    <Button Name="BtnSelectAll" Classes="textlink" Content="Select all" Click="BtnSelectAll_Click"/>
+                    <Button Name="BtnSelectNone" Classes="textlink" Content="Clear" Click="BtnSelectNone_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,12">
+                <ItemsControl Name="ItemsControlModules">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Classes="module-card">
+                                <Grid RowDefinitions="Auto,*,Auto">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                        <Border Width="28" Height="28" CornerRadius="4" Background="#15222C" VerticalAlignment="Top">
+                                            <TextBlock Text="{Binding Number}"
+                                                       FontSize="11"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{StaticResource AppAccentBrush}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Classes="card-title" Text="{Binding Title}" VerticalAlignment="Center"/>
+                                        <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected}" VerticalAlignment="Top"/>
+                                    </Grid>
+                                    <TextBlock Grid.Row="1" Classes="card-desc" Text="{Binding Description}"/>
+                                    <Button Grid.Row="2"
+                                            Classes="ghost"
+                                            Content="Run this module"
+                                            Click="BtnRunSingleModule_Click"
+                                            Tag="{Binding Id}"
+                                            Margin="0,12,0,0"
+                                            Height="32"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Status -->
+            <Border Grid.Row="4" Classes="panel" Padding="14,10">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+                    <Border Name="StatusPill" Background="#1A3328" CornerRadius="12" Padding="10,4" VerticalAlignment="Center">
+                        <TextBlock Name="TxtStatus" Text="Ready" FontSize="12" FontWeight="SemiBold" Foreground="#6CCB5F"/>
+                    </Border>
+                    <ProgressBar Grid.Column="1" Name="ProgBar" Minimum="0" Maximum="100" Value="0" VerticalAlignment="Center"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                        <Button Name="BtnOpenReport" Classes="primary" Content="Open HTML report" Click="BtnOpenReport_Click" Height="32" MinWidth="148"/>
+                        <Button Name="BtnOpenFolder" Classes="neutral" Content="Open output folder" Click="BtnOpenFolder_Click" Height="32" MinWidth="148"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Console -->
+        <Border Grid.Row="2" Classes="panel" Margin="20,0,20,16" Height="168" ClipToBounds="True">
+            <Grid RowDefinitions="Auto,*">
+                <Border Background="#1A1A1A" BorderBrush="{StaticResource AppBorder}" BorderThickness="0,0,0,1" Padding="14,8">
+                    <TextBlock Classes="kicker" Text="AUDIT LOG"/>
+                </Border>
+                <TextBox Grid.Row="1"
+                         Name="TxtLogConsole"
+                         Classes="log"
+                         IsReadOnly="True"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         Watermark="Audit output will appear here"
+                         Padding="14,10"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Stretch"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

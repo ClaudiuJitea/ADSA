@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>AD-Security-Audit-GUI</AssemblyName>
+    <RootNamespace>ADSecurityAuditGUI</RootNamespace>
+    <ApplicationTitle>AD Security Audit</ApplicationTitle>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.4" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\Invoke-ADSecurityAudit.ps1" Link="Resources\Invoke-ADSecurityAudit.ps1" />
+    <EmbeddedResource Include="..\Config\**\*.*" Link="Resources\Config\%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Modules\**\*.*" Link="Resources\Modules\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
